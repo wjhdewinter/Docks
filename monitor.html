@@ -52,6 +52,40 @@ header{flex:0 0 auto;display:grid;grid-template-columns:minmax(0,1fr) auto auto;
 @media (max-width:700px) and (orientation:landscape){
  .brand img{width:72px}.title h1{font-size:18px}.locsel{width:126px;font-size:10px}.clock{font-size:18px}.date{display:none}
 }
+
+/* Fullscreen: vaste, compacte bovenbalk zodat locatie nooit over titel/klok valt. */
+:fullscreen header{
+  grid-template-columns:minmax(220px,1fr) minmax(150px,190px) minmax(170px,1fr);
+  gap:12px;
+  padding:8px 14px;
+}
+:fullscreen .brand{gap:10px;overflow:hidden}
+:fullscreen .brand img{width:104px;max-height:36px;flex:0 0 auto}
+:fullscreen .title h1{font-size:clamp(20px,2.2vw,30px);overflow:hidden;text-overflow:ellipsis}
+:fullscreen .title small{display:none}
+:fullscreen .locwrap{min-width:0;width:100%}
+:fullscreen .locsel{width:100%;min-width:0;height:36px;font-size:12px;padding:0 28px 0 10px}
+:fullscreen .headright{justify-self:end;min-width:0;overflow:hidden}
+:fullscreen .clock{font-size:clamp(20px,2.1vw,29px)}
+:fullscreen .date{font-size:clamp(8px,.8vw,11px);overflow:hidden;text-overflow:ellipsis}
+
+@media (max-width:1000px){
+  :fullscreen header{grid-template-columns:minmax(190px,1fr) 150px minmax(145px,.8fr);gap:8px;padding:7px 10px}
+  :fullscreen .brand img{width:78px;max-height:30px}
+  :fullscreen .title h1{font-size:20px}
+  :fullscreen .locsel{height:34px;font-size:11px}
+  :fullscreen .clock{font-size:20px}
+  :fullscreen .date{font-size:8px}
+}
+
+@media (max-width:760px){
+  :fullscreen header{grid-template-columns:minmax(150px,1fr) 132px auto;gap:6px;padding:6px 8px}
+  :fullscreen .brand img{display:none}
+  :fullscreen .title h1{font-size:18px}
+  :fullscreen .locsel{height:32px;font-size:10px;padding-left:8px;padding-right:22px}
+  :fullscreen .clock{font-size:18px}
+  :fullscreen .date{display:none}
+}
 </style>
 </head>
 <body>

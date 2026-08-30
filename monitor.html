@@ -86,6 +86,49 @@ header{flex:0 0 auto;display:grid;grid-template-columns:minmax(0,1fr) auto auto;
   :fullscreen .clock{font-size:18px}
   :fullscreen .date{display:none}
 }
+
+/* AWC UNIFIED STATUS COLORS START */
+:root{
+  --status-registered:#2f6bff;
+  --status-atdock:#009b94;
+  --status-progress:#8757e5;
+  --status-wait:#e68a00;
+  --status-ready:#159947;
+  --status-urgent:#d92d20;
+}
+
+/* Exact hetzelfde statuspalet als de Dockregistratie */
+.dock.registered{background:var(--status-registered)}
+.dock.registered:before{background:#9bb7ff}
+.dock.atdock{background:var(--status-atdock)}
+.dock.atdock:before{background:#72d8d2}
+.dock.progress{background:var(--status-progress)}
+.dock.progress:before{background:#c0a5ff}
+.dock.waiting{background:var(--status-wait)}
+.dock.waiting:before{background:#ffd27a}
+.dock.ready{background:var(--status-ready)}
+.dock.ready:before{background:#7ed9a1}
+
+/* SPOED: hele tegel rood, net als in de Dockregistratie */
+.dock.urgent,
+.dock.registered.urgent,
+.dock.atdock.urgent,
+.dock.progress.urgent,
+.dock.waiting.urgent,
+.dock.ready.urgent{
+  background:var(--status-urgent)!important;
+  border-color:#ff8a80!important;
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,.16)!important;
+  animation:none!important;
+}
+.dock.urgent:before{background:#ffaaa3!important}
+.dock.urgent .urgentBadge{background:#fff;color:var(--status-urgent);border:1px solid rgba(255,255,255,.8)}
+.dock.urgent .status{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.28);color:#fff}
+.dock.urgent .meta,.dock.urgent .empty{color:#fff}
+
+/* Zelfde kleuren in detail- en wachtoverzichten */
+.detailStatus{box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+/* AWC UNIFIED STATUS COLORS END */
 </style>
 </head>
 <body>

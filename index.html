@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="theme-color" content="#ff5f00"><title>AWC Dockregistratie · FIX 31-08 DIAG</title><link rel="icon" href="https://www.amsterdamwarehouse.com/assets/img/logo_AWC_black.svg">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="theme-color" content="#ff5f00"><title>AWC Dockregistratie</title><link rel="icon" href="https://www.amsterdamwarehouse.com/assets/img/logo_AWC_black.svg">
 <style>
 :root{--g:#176b3a;--g2:#21854a;--bg:#f4f7f5;--card:#fff;--tx:#152019;--mut:#66736b;--ln:#d8e2dc;--warn:#9a5b00;--red:#a61b12;--blue:#1f5fae;--shadow:0 6px 20px rgba(20,40,28,.07)}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:Arial,Helvetica,sans-serif;padding-bottom:82px}button,input,select,textarea{font:inherit}button{border:0;border-radius:10px;padding:10px 12px;font-weight:800;cursor:pointer}.primary{background:var(--g);color:#fff}.secondary{background:#edf3ef;color:var(--tx)}.danger{background:#fdeceb;color:var(--red)}
 header{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid var(--ln);display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px}.brand{display:flex;gap:10px;align-items:center}.logo{width:44px;height:44px;border:2px solid var(--g);color:var(--g);display:grid;place-items:center;border-radius:9px;font-weight:900}.brand h1{font-size:18px;margin:0;color:var(--g)}.brand small{display:block;color:var(--mut);font-size:11px;margin-top:2px}.actions{display:flex;gap:7px;flex-wrap:wrap}main{max-width:1450px;margin:auto;padding:14px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px}.stat{background:#fff;border:1px solid var(--ln);border-radius:13px;padding:11px;box-shadow:var(--shadow)}.stat b{display:block;font-size:24px}.stat span{font-size:11px;color:var(--mut)}.panel{background:#fff;border:1px solid var(--ln);border-radius:15px;box-shadow:var(--shadow);padding:13px;margin-bottom:12px}.toolbar{display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap}.toolbar h2{margin:0;font-size:16px}.filters{display:flex;gap:7px;flex-wrap:wrap}.filters input,.filters select{min-width:150px}.tabs{display:flex;gap:6px}.tabs button.active{background:var(--g);color:#fff}input,select,textarea{width:100%;padding:10px;border:1px solid #c8d5cd;border-radius:9px;background:#fff}textarea{min-height:70px;resize:vertical}
@@ -78,7 +78,7 @@ header{background:#fff;border-bottom:4px solid var(--awc-orange);box-shadow:0 5p
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head><body><div id="awcBuildBadge" style="position:fixed;right:8px;bottom:8px;z-index:99999;background:#111;color:#fff;padding:5px 8px;border-radius:6px;font:11px Arial;opacity:.78">FIX 31-08 DIAG</div>
+</head><body>
 <header><div class="brand"><div class="awcLogo"><img src="https://www.amsterdamwarehouse.com/assets/img/logo_AWC_black.svg" alt="Amsterdam Warehouse Company"></div><div><h1>Dockregistratie</h1><small id="locationSubtitle">THE PLACE TO GO · CONAKRYWEG · DOCK 1 T/M 22</small></div></div><div class="actions"><div id="cloudState" class="cloudstate syncing"><span class="dot"></span><span id="cloudText">Verbinden…</span></div><span id="userChip" class="userchip"></span><select id="locationSelect" class="langsel" onchange="setLocation(this.value)" aria-label="Locatie"><option value="Conakryweg">Conakryweg · 22 docks</option><option value="Slego">Slego · 16 docks</option></select><select id="langSelect" class="langsel" onchange="setLanguage(this.value)" aria-label="Language"><option value="nl">NL</option><option value="en">EN</option></select><div class="morebox"><button class="secondary" onclick="toggleMore(event)">Meer ▾</button><div id="moreMenu" class="moremenu"><button id="menuRegister" class="secondary" onclick="openForm();closeMore()">Nieuwe chauffeur</button><button class="secondary" onclick="shareWhatsApp();closeMore()">WhatsApp</button><button class="secondary" onclick="manualSync();closeMore()">Nu synchroniseren</button><div id="adminMenu" class="hidden"><div style="height:1px;background:var(--ln);margin:3px 0 5px"></div><button class="secondary" onclick="printPDF();closeMore()">PDF</button><button class="secondary" onclick="exportCSV();closeMore()">CSV</button><button class="secondary" onclick="exportBackup();closeMore()">Back-up</button><button class="secondary" onclick="document.getElementById('backupFile').click();closeMore()">Back-up importeren</button><button class="secondary" onclick="addAwcUser();closeMore()">Gebruiker toevoegen</button><button class="secondary" onclick="showAwcUsers();closeMore()">Gebruikers bekijken</button></div><button class="secondary" onclick="signOutAwc();closeMore()">Uitloggen</button></div></div></div></header><input id="backupFile" type="file" accept="application/json,.json" style="display:none" onchange="importBackup(event)">
 <div id="authBack" class="authback"><div class="authcard"><div class="authbrand"><div class="awcLogo authLogo"><img src="https://www.amsterdamwarehouse.com/assets/img/logo_AWC_black.svg" alt="Amsterdam Warehouse Company"></div><div><h2 id="authTitle">Dockregistratie</h2><div class="hint">THE PLACE TO GO · CENTRAL MULTI-USER</div></div></div><div id="loginPanel"><p>Log in met je werk-e-mailadres en wachtwoord. Nieuwe gebruikers krijgen van een beheerder een tijdelijk wachtwoord en kiezen bij de eerste login zelf een nieuw wachtwoord.</p><div class="authrow"><input id="authEmail" type="email" autocomplete="email" placeholder="naam@bedrijf.nl"><input id="authPassword" type="password" autocomplete="current-password" placeholder="Wachtwoord (minimaal 6 tekens)"><button class="primary" onclick="signInAwc()">Inloggen</button><button class="secondary" onclick="resetPasswordAwc()">Wachtwoord vergeten</button><div id="authMsg" class="authmsg"></div></div><p class="hint">Nog geen account? Vraag een beheerder om je via <b>Meer → Gebruiker toevoegen</b> aan te maken.</p></div><div id="recoveryPanel" class="hidden"><p>Maak een nieuw wachtwoord voor je AWC-account.</p><div class="authrow"><input id="newPassword" type="password" autocomplete="new-password" placeholder="Nieuw wachtwoord (minimaal 6 tekens)"><input id="newPassword2" type="password" autocomplete="new-password" placeholder="Herhaal nieuw wachtwoord"><button class="primary" onclick="completePasswordReset()">Nieuw wachtwoord opslaan</button><div id="recoveryMsg" class="authmsg"></div></div></div></div></div>
 <main>
@@ -105,7 +105,7 @@ let appLang=localStorage.getItem('awc_lang')||'nl';
 const LOCATIONS={Conakryweg:{docks:22},Slego:{docks:16}};let selectedLocation=localStorage.getItem('awc_location')||'Conakryweg';if(!LOCATIONS[selectedLocation])selectedLocation='Conakryweg';
 function locationDockCount(){return LOCATIONS[selectedLocation]?.docks||22} function locationJobs(){return jobs.filter(j=>(j.location||'Conakryweg')===selectedLocation)}
 function setLocation(loc){if(!LOCATIONS[loc])return;selectedLocation=loc;localStorage.setItem('awc_location',loc);if($('locationSelect'))$('locationSelect').value=loc;updateLocationUi();buildDocks();render();renderHistory();showToast('Locatie: '+loc)}
-function updateLocationUi(){const n=locationDockCount();if($('locationSelect'))$('locationSelect').value=selectedLocation;if($('locationSubtitle'))$('locationSubtitle').textContent=`THE PLACE TO GO · ${selectedLocation.toUpperCase()} · DOCK 1 T/M ${n}`;document.title=`AWC Dockregistratie · ${selectedLocation} · FIX 31-08 DIAG`}
+function updateLocationUi(){const n=locationDockCount();if($('locationSelect'))$('locationSelect').value=selectedLocation;if($('locationSubtitle'))$('locationSubtitle').textContent=`THE PLACE TO GO · ${selectedLocation.toUpperCase()} · DOCK 1 T/M ${n}`;document.title=`AWC Dockregistratie · ${selectedLocation}`}
 
 const EN={
 'Dockregistratie':'Dock registration','Live registratie · Dock 1 t/m 22':'Live registration · Dock 1 to 22','Meer ▾':'More ▾','Back-up':'Backup','Back-up importeren':'Import backup','Nu synchroniseren':'Sync now','Gebruiker toevoegen':'Add user','Gebruikers bekijken':'View users','Uitloggen':'Log out','Centrale multi-user versie':'Central multi-user version','Log in met je werk-e-mailadres en wachtwoord. De eerste gebruiker die succesvol inlogt wordt automatisch beheerder; daarna moeten nieuwe gebruikers worden toegelaten.':'Log in with your work email address and password. The first successful user becomes administrator automatically; new users must then be approved.','Inloggen':'Log in','Eerste keer: account aanmaken':'First time: create account','Wachtwoord vergeten':'Forgot password','Vrije docks':'Free docks','Bezette docks':'Occupied docks','Wacht op behandeling':'Waiting','Vertrokken vandaag':'Departed today','Live dockoverzicht':'Live dock overview','Lijst':'List','Live bord':'Live board','Geschiedenis':'History','Vandaag':'Today','Alle datums':'All dates','Geschiedenis PDF':'History PDF','Registraties':'Registrations','Laden':'Loading','Lossen':'Unloading','Gem. verblijfsduur':'Avg. dwell time','Nieuwe chauffeur':'New driver','Sluiten':'Close','Referentie':'Reference','Wat komt de chauffeur doen?':'What is the driver here for?','Kies…':'Choose…','Laden + Lossen':'Loading + Unloading','Kies een dock':'Choose a dock','Extra gegevens (optioneel)':'Additional details (optional)','Vervoerder':'Carrier','Kenteken / trailernr.':'License plate / trailer no.','Chauffeur':'Driver','Soort eenheid':'Unit type','Niet ingevuld':'Not specified','Bakwagen':'Rigid truck','Overig':'Other','Opmerking':'Note','Opslaan':'Save','Annuleren':'Cancel','Volgende status':'Next status','Vorige status':'Previous status','Wijzig':'Edit','Vertrokken':'Departed','Aangemeld':'Registered','Aan dock':'At dock','Bezig':'In progress','Wacht':'Waiting','Gereed':'Ready','Vrij':'Free','Bezet':'Occupied','Gemeld':'Arrived','Aanwezig':'Present','SPOED':'URGENT','Beschikbaar':'Available','Geen actieve registraties.':'No active registrations.','Werk':'Activity','Meldtijd':'Arrival','Vertrek':'Departure','Verblijfsduur':'Dwell time','Prioriteit':'Priority','Normaal':'Normal','Spoed':'Urgent','Trailer':'Trailer','Container':'Container'};
@@ -202,32 +202,15 @@ async function resetPasswordAwc(){let email=$('authEmail').value.trim(),msg=$('a
 function showRecoveryPanel(){$('authBack').classList.remove('hidden');$('loginPanel').classList.add('hidden');$('recoveryPanel').classList.remove('hidden');const invited=new URLSearchParams(location.search).get('invite')==='1';$('authTitle').textContent=appLang==='en'?(invited?'Welcome — choose password':'Set new password'):(invited?'Welkom — kies je wachtwoord':'Nieuw wachtwoord');setCloudState('offline',appLang==='en'?(invited?'Activate account':'Password recovery'):(invited?'Account activeren':'Wachtwoord herstellen'))}
 async function completePasswordReset(){let p1=$('newPassword').value,p2=$('newPassword2').value,msg=$('recoveryMsg');if(p1.length<6){msg.className='authmsg err';msg.textContent=appLang==='en'?'Use at least 6 characters.':'Gebruik minimaal 6 tekens.';return}if(p1!==p2){msg.className='authmsg err';msg.textContent=appLang==='en'?'Passwords do not match.':'De wachtwoorden zijn niet hetzelfde.';return}msg.className='authmsg';msg.textContent=appLang==='en'?'Saving new password…':'Nieuw wachtwoord opslaan…';const {error}=await db.auth.updateUser({password:p1,data:{force_password_change:false}});if(error){console.error(error);msg.className='authmsg err';msg.textContent=(appLang==='en'?'Could not save new password: ':'Nieuw wachtwoord opslaan is niet gelukt: ')+(error.message||'onbekende fout');return}msg.className='authmsg ok';msg.textContent=appLang==='en'?'Password changed. Log in again with your new password.':'Wachtwoord gewijzigd. Log opnieuw in met je nieuwe wachtwoord.';history.replaceState({},document.title,location.pathname);setTimeout(async()=>{await db.auth.signOut();location.reload()},1800)}
 async function signUpAwc(){const msg=$('authMsg');msg.className='authmsg err';msg.textContent=appLang==='en'?'New accounts are created by an administrator. Ask the administrator to invite you via More → Add user.':'Nieuwe accounts worden door een beheerder toegevoegd. Vraag de beheerder je uit te nodigen via Meer → Gebruiker toevoegen.'}
-function awcUserDiag(step,msg,kind='info'){
-  let box=document.getElementById('awcUserDiagBox');
-  if(!box){
-    box=document.createElement('div');
-    box.id='awcUserDiagBox';
-    box.style.cssText='position:fixed;left:12px;right:12px;bottom:54px;z-index:99999;background:#fff;border:2px solid #ff5f00;border-radius:12px;padding:12px 14px;box-shadow:0 6px 24px rgba(0,0,0,.25);font:14px/1.4 system-ui;color:#111;white-space:pre-wrap';
-    document.body.appendChild(box);
-  }
-  const icon=kind==='ok'?'✅':kind==='error'?'❌':'⏳';
-  box.textContent=`${icon} Gebruiker toevoegen — stap ${step}\n${msg}`;
-}
-
 async function addAwcUser(){
-  awcUserDiag('1/5','Knop werkt. Gegevens worden gevraagd.','ok');
-  if(currentMember?.role!=='beheerder'){awcUserDiag('1/5','Gestopt: je bent niet als beheerder herkend.','error');alert('Alleen een beheerder kan gebruikers toevoegen.');return}
-  let name=prompt('Naam van de collega (optioneel):','');if(name===null){awcUserDiag('1/5','Geannuleerd bij naam.');return}
-  let email=prompt('Werk-e-mailadres van de collega:');if(!email){awcUserDiag('1/5','Geannuleerd bij e-mailadres.');return}email=email.trim().toLowerCase();
-  let role=prompt('Rol: medewerker of kijker','medewerker');if(!role){awcUserDiag('1/5','Geannuleerd bij rol.');return}role=role.trim().toLowerCase();
-  if(!['medewerker','kijker'].includes(role)){awcUserDiag('1/5','Ongeldige rol gekozen.','error');alert('Kies medewerker of kijker.');return}
+  if(currentMember?.role!=='beheerder'){alert('Alleen een beheerder kan gebruikers toevoegen.');return}
+  let name=prompt('Naam van de collega (optioneel):','');if(name===null)return;
+  let email=prompt('Werk-e-mailadres van de collega:');if(!email)return;email=email.trim().toLowerCase();
+  let role=prompt('Rol: medewerker of kijker','medewerker');if(!role)return;role=role.trim().toLowerCase();
+  if(!['medewerker','kijker'].includes(role)){alert('Kies medewerker of kijker.');return}
   try{
-    awcUserDiag('2/5','Beheerderssessie controleren…');
     const {data:{session},error:sessionError}=await db.auth.getSession();
-    if(sessionError||!session?.access_token){awcUserDiag('2/5','Geen geldige sessie. Log uit en opnieuw in.','error');alert('Je beheerderssessie is verlopen. Log uit en opnieuw in.');return}
-    awcUserDiag('2/5',`Sessie gevonden voor ${session.user?.email||'onbekend'}.`,'ok');
-
-    awcUserDiag('3/5',`Aanvraag naar Supabase verzenden voor ${email}…`);
+    if(sessionError||!session?.access_token){alert('Je beheerderssessie is verlopen. Log uit en opnieuw in.');return}
     const controller=new AbortController();
     const timeout=setTimeout(()=>controller.abort(),15000);
     let resp;
@@ -239,26 +222,18 @@ async function addAwcUser(){
         signal:controller.signal
       });
     }finally{clearTimeout(timeout)}
-    awcUserDiag('3/5',`Supabase heeft geantwoord: HTTP ${resp.status}.`,'ok');
-
-    let data={};
-    let raw='';
-    try{raw=await resp.text(); data=raw?JSON.parse(raw):{}}catch(_e){data={}}
-    if(!resp.ok){const detail=data?.error||raw||`HTTP ${resp.status}`;awcUserDiag('4/5',`Fout van Supabase: ${detail}`,'error');alert('Gebruiker toevoegen is niet gelukt: '+detail);return}
-    if(data?.error){awcUserDiag('4/5',`Fout van Supabase: ${data.error}`,'error');alert('Gebruiker toevoegen is niet gelukt: '+data.error);return}
-    awcUserDiag('4/5',`Antwoord ontvangen. Accountstatus wordt gecontroleerd…`,'ok');
-
+    let data={},raw='';
+    try{raw=await resp.text();data=raw?JSON.parse(raw):{}}catch(_e){data={}}
+    if(!resp.ok||data?.error){const detail=data?.error||raw||`HTTP ${resp.status}`;alert('Gebruiker toevoegen is niet gelukt: '+detail);return}
     const {data:member,error:verifyError}=await db.from('awc_app_members').select('email,role,active').eq('email',email).maybeSingle();
-    if(verifyError||!member||!member.active){awcUserDiag('4/5','Account is niet volledig opgeslagen in awc_app_members.','error');console.error(verifyError);alert('Het account is niet volledig opgeslagen.');return}
-
-    if(data?.already_registered){awcUserDiag('5/5',`${email} bestaat al als login-account. Geen nieuw tijdelijk wachtwoord uitgegeven.`,'ok');alert(`${email} is actief als ${role}.\n\nEr bestond al een login-account. Er is daarom geen nieuw tijdelijk wachtwoord aangemaakt.`);return}
+    if(verifyError||!member||!member.active){console.error(verifyError);alert('Het account is niet volledig opgeslagen.');return}
+    if(data?.already_registered){alert(`${email} is actief als ${role}.\n\nEr bestond al een login-account. Er is daarom geen nieuw tijdelijk wachtwoord aangemaakt.`);return}
     const temp=String(data?.temporary_password||'');
-    if(!temp){awcUserDiag('5/5','Account aangemaakt, maar tijdelijk wachtwoord ontbreekt in het antwoord.','error');alert('Het account is aangemaakt, maar het tijdelijke wachtwoord ontbreekt in het antwoord.');return}
-    awcUserDiag('5/5',`Klaar. Tijdelijk wachtwoord is aangemaakt en wordt nu getoond.`,'ok');
+    if(!temp){alert('Het account is aangemaakt, maar het tijdelijke wachtwoord ontbreekt in het antwoord.');return}
     alert(`ACCOUNT AANGEMAAKT\n\n${email}\nTijdelijk wachtwoord: ${temp}\n\nKopieer of noteer dit wachtwoord nu. Het wordt maar één keer getoond.\n\nBij de eerste login moet de collega direct een eigen nieuw wachtwoord kiezen.`)
   }catch(e){
-    const detail=e?.name==='AbortError'?'Geen antwoord binnen 15 seconden. De aanvraag is afgebroken.':(e?.message||'Onbekende fout');
-    awcUserDiag('3/5',detail,'error');console.error(e);alert('Gebruiker toevoegen is niet gelukt: '+detail)
+    const detail=e?.name==='AbortError'?'Geen antwoord binnen 15 seconden. Probeer het opnieuw.':(e?.message||'Onbekende fout');
+    console.error(e);alert('Gebruiker toevoegen is niet gelukt: '+detail)
   }
 }
 

@@ -222,7 +222,17 @@ function showNextDockPopup(dock,row){
     ?`<div><b>${t('nextShipment')}:</b> ${esc(row.reference)}</div><div><b>${t('shipmentLocation')}:</b> ${esc(row.staging_area||'—')}</div><div><b>${t('nextDriver')}</b></div>`
     :`<div><b>${lang==='en'?'Status':'Status'}:</b> ${lang==='en'?'Free and available':'Vrij en beschikbaar'}</div>`;
   const note=$('nextDockNote');
-  if(hasNext&&row.notes){note.textContent='⚠ '+row.notes;note.classList.remove('hidden')}else note.classList.add('hidden');
+  // Toon alleen een opmerking wanneer er werkelijk een VOLGENDE zending is.
+  // Wis altijd eerst de vorige popuptekst, zodat opmerkingen van een vertrokken
+  // chauffeur nooit kunnen blijven hangen bij een leeg/vrij dock.
+  note.textContent='';
+  note.classList.add('hidden');
+  note.style.display='none';
+  if(hasNext&&String(row.notes||'').trim()){
+    note.textContent='⚠ '+String(row.notes).trim();
+    note.classList.remove('hidden');
+    note.style.display='block';
+  }
   $('nextDockClose').textContent='OK';
   let left=20;
   $('nextDockCountdown').textContent=`${t('closesIn')} ${left} ${t('seconds')}`;

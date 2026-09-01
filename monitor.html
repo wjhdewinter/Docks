@@ -214,11 +214,15 @@ function closeNextDockPopup(){
 }
 function showNextDockPopup(dock,row){
   closeNextDockPopup();
+  row=row||{};
+  const hasNext=!!String(row.reference||'').trim();
   $('nextDockHead').textContent=t('dockFree');
   $('nextDockName').textContent=dock;
-  $('nextDockInfo').innerHTML=`<div><b>${t('nextShipment')}:</b> ${esc(row.reference||t('noRef'))}</div><div><b>${t('shipmentLocation')}:</b> ${esc(row.staging_area||'—')}</div><div><b>${t('nextDriver')}</b></div>`;
+  $('nextDockInfo').innerHTML=hasNext
+    ?`<div><b>${t('nextShipment')}:</b> ${esc(row.reference)}</div><div><b>${t('shipmentLocation')}:</b> ${esc(row.staging_area||'—')}</div><div><b>${t('nextDriver')}</b></div>`
+    :`<div><b>${lang==='en'?'Status':'Status'}:</b> ${lang==='en'?'Free and available':'Vrij en beschikbaar'}</div>`;
   const note=$('nextDockNote');
-  if(row.notes){note.textContent='⚠ '+row.notes;note.classList.remove('hidden')}else note.classList.add('hidden');
+  if(hasNext&&row.notes){note.textContent='⚠ '+row.notes;note.classList.remove('hidden')}else note.classList.add('hidden');
   $('nextDockClose').textContent='OK';
   let left=20;
   $('nextDockCountdown').textContent=`${t('closesIn')} ${left} ${t('seconds')}`;

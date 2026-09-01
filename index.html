@@ -324,15 +324,20 @@ async function checkRecentDockReadyAlert(){
 }
 function closeDockReadyPopup(){const p=$('dockReadyPopup');if(p)p.classList.remove('show')}
 function showDockReadyPopup(dock,x){
-  if(!x)return;
+  x=x||{};
+  const hasNext=!!String(x.reference||'').trim();
   $('dockReadyTitle').textContent=appLang==='en'?'DOCK AVAILABLE':'DOCK IS VRIJ';
   $('dockReadyDock').textContent=dock;
-  $('dockReadyMsg').textContent=appLang==='en'?'The next prepared shipment can go to this dock.':'De volgende klaargezette zending kan naar dit dock.';
-  const parts=[
-    `<b>${appLang==='en'?'Reference':'Referentie'}:</b> ${esc(x.reference||'-')}`,
+  $('dockReadyMsg').textContent=hasNext
+    ?(appLang==='en'?'The next prepared shipment can go to this dock.':'De volgende klaargezette zending kan naar dit dock.')
+    :(appLang==='en'?'This dock is now free and available.':'Dit dock is nu vrij en beschikbaar.');
+  const parts=hasNext?[
+    `<b>${appLang==='en'?'Reference':'Referentie'}:</b> ${esc(x.reference)}`,
     x.staging_area?`<b>${appLang==='en'?'Location':'Locatie'}:</b> ${esc(x.staging_area)}`:'',
     x.notes?`<div class="dockreadynote">⚠ <b>${appLang==='en'?'Note':'Opmerking'}:</b> ${esc(x.notes)}</div>`:''
-  ].filter(Boolean);
+  ].filter(Boolean):[
+    `<b>${appLang==='en'?'Status':'Status'}:</b> ${appLang==='en'?'Free':'Vrij'}`
+  ];
   $('dockReadyInfo').innerHTML=parts.join('<br>');
   $('dockReadyPopup').classList.add('show');
 }

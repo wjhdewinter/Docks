@@ -131,7 +131,7 @@ header{flex:0 0 auto;display:grid;grid-template-columns:minmax(0,1fr) auto auto;
 /* AWC UNIFIED STATUS COLORS END */
 
 /* Grote melding wanneer een dock vrijkomt en er een volgende laadzending klaarstaat */
-.nextDockPopup{position:fixed;inset:0;z-index:1200;display:flex;align-items:center;justify-content:center;padding:28px;background:rgba(4,10,18,.80);backdrop-filter:blur(4px)}
+.nextDockPopup{position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:28px;background:rgba(4,10,18,.80);backdrop-filter:blur(4px)}
 .nextDockPopup.hidden{display:none}
 .nextDockCard{width:min(760px,94vw);background:#fff;color:#111;border-radius:24px;box-shadow:0 28px 90px rgba(0,0,0,.55);overflow:hidden;text-align:center;border:4px solid #159947}
 .nextDockHead{background:#159947;color:#fff;padding:24px 28px 20px;font-weight:1000;font-size:clamp(28px,4.2vw,54px);letter-spacing:.02em}
@@ -173,7 +173,7 @@ header{flex:0 0 auto;display:grid;grid-template-columns:minmax(0,1fr) auto auto;
 const SUPABASE_URL='https://ghhcnzjdzmuupigspppl.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable__tat43V0qbu_yu3lKiIFaA_w0nseD02';
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-const $=id=>document.getElementById(id);let session=null,channel=null,jobs=[],lastSync=null,timelineCache=new Map(),modalTimer=null;const LOCATIONS={Conakryweg:{docks:22},Slego:{docks:16}};let selectedLocation=localStorage.getItem('awc_monitor_location')||'Conakryweg';if(!LOCATIONS[selectedLocation])selectedLocation='Conakryweg';
+const $=id=>document.getElementById(id);let session=null,channel=null,alertChannel=null,jobs=[],lastSync=null,timelineCache=new Map(),modalTimer=null;const LOCATIONS={Conakryweg:{docks:22},Slego:{docks:16}};let selectedLocation=localStorage.getItem('awc_monitor_location')||'Conakryweg';if(!LOCATIONS[selectedLocation])selectedLocation='Conakryweg';
 let lang=localStorage.getItem('awc_monitor_lang')||'nl';if(!['nl','en'].includes(lang))lang='nl';const TR={nl:{title:'LIVE DOCKBORD',free:'VRIJE DOCKS',busy:'BEZETTE DOCKS',wait:'WACHT',ready:'GEREED',waiting:'Wachtend / aangemeld',performance:'Dagprestatie bekijken',fullscreen:'Volledig scherm',close:'Sluiten',freeStatus:'VRIJ',available:'Beschikbaar',present:'Aanwezig',urgent:'SPOED',connection:'VERBINDING VERBROKEN — gegevens mogelijk niet actueel',connecting:'Verbinden…',syncing:'Synchroniseren…',noLive:'Geen live verbinding',noInternet:'Geen internetverbinding',restoring:'Verbinding herstellen…',notLogged:'Niet ingelogd',notUpdated:'Nog niet bijgewerkt',updated:'Live · bijgewerkt',overview:'Overzicht',activity:'Activiteit',status:'Status',priority:'Prioriteit',carrier:'Vervoerder',plate:'Kenteken',driver:'Chauffeur',unit:'Trailer / unit',arrived:'Aangekomen',notes:'Opmerkingen',timeline:'Status-tijdlijn',loading:'Laden…',noTimeline:'Nog geen statusgeschiedenis beschikbaar.',noRef:'Geen referentie',noDock:'Nog geen dock',noWaiting:'Er zijn momenteel geen wachtende of aangemelde chauffeurs.',registrations:'registraties',registration:'registratie',today:'vandaag',handled:'Afgehandeld',avg:'Gem. verblijfsduur',longest:'Langste verblijfsduur',busiest:'Drukste vertrekuur:',perfNote:'De dagprestatie wordt berekend uit registraties die vandaag op deze locatie zijn vertrokken.',freeDetail:'Dit dock is momenteel vrij en beschikbaar.',normal:'Normaal',tap:'Tik voor details.',loginTitle:'Live Dockbord',loginText:'Log één keer in. Daarna blijft dit scherm alleen het actuele dockoverzicht tonen en automatisch synchroniseren.',email:'E-mailadres',password:'Wachtwoord',loginBtn:'Live bord openen',dockFree:'DOCK IS VRIJ',nextShipment:'Volgende zending',shipmentLocation:'Locatie',nextDriver:'Volgende chauffeur kan naar dit dock',closesIn:'Sluit automatisch over',seconds:'seconden'},en:{title:'LIVE DOCK BOARD',free:'FREE DOCKS',busy:'OCCUPIED DOCKS',wait:'WAITING',ready:'READY',waiting:'Waiting / registered',performance:'View daily performance',fullscreen:'Full screen',close:'Close',freeStatus:'FREE',available:'Available',present:'Present',urgent:'URGENT',connection:'CONNECTION LOST — data may not be current',connecting:'Connecting…',syncing:'Synchronising…',noLive:'No live connection',noInternet:'No internet connection',restoring:'Restoring connection…',notLogged:'Not signed in',notUpdated:'Not updated yet',updated:'Live · updated',overview:'Overview',activity:'Activity',status:'Status',priority:'Priority',carrier:'Carrier',plate:'Licence plate',driver:'Driver',unit:'Trailer / unit',arrived:'Arrived',notes:'Notes',timeline:'Status timeline',loading:'Loading…',noTimeline:'No status history available yet.',noRef:'No reference',noDock:'No dock assigned',noWaiting:'There are currently no waiting or registered drivers.',registrations:'registrations',registration:'registration',today:'today',handled:'Completed',avg:'Avg. dwell time',longest:'Longest dwell time',busiest:'Busiest departure hour:',perfNote:'Daily performance is calculated from registrations that departed today at this location.',freeDetail:'This dock is currently free and available.',normal:'Normal',tap:'Tap for details.',loginTitle:'Live Dock Board',loginText:'Sign in once. This screen will then show only the current dock overview and synchronise automatically.',email:'Email address',password:'Password',loginBtn:'Open live board',dockFree:'DOCK IS FREE',nextShipment:'Next shipment',shipmentLocation:'Location',nextDriver:'The next driver can go to this dock',closesIn:'Closes automatically in',seconds:'seconds'}};function t(k){return TR[lang][k]||TR.nl[k]||k}function statusText(s){if(lang==='nl')return s||'';return {'Aangemeld':'REGISTERED','Aan dock':'AT DOCK','Bezig':'IN PROGRESS','Wacht':'WAITING','Gereed':'READY','Vrij':'FREE'}[s]||s||''}function activityText(a){if(lang==='nl')return a||'';return {'Laden':'Loading','Lossen':'Unloading','Laden + Lossen':'Loading + Unloading'}[a]||a||''}
 function dockCount(){return LOCATIONS[selectedLocation]?.docks||22}function setLocation(loc){if(!LOCATIONS[loc])return;selectedLocation=loc;localStorage.setItem('awc_monitor_location',loc);updateLocationUi();render()}function setLanguage(v){if(!['nl','en'].includes(v))return;lang=v;localStorage.setItem('awc_monitor_lang',v);applyLanguage();render()}function applyLanguage(){const n=dockCount();$('langSelect').value=lang;$('locationSelect').setAttribute('aria-label',lang==='nl'?'Locatie':'Location');$('langSelect').setAttribute('aria-label',lang==='nl'?'Taal':'Language');document.querySelector('.title h1').textContent=t('title');$('connBanner').textContent=t('connection');document.querySelector('.summary .card:nth-child(1) span').textContent=t('free');document.querySelector('.summary .card:nth-child(2) span').textContent=t('busy');document.querySelector('.summary .card:nth-child(3) span').textContent=t('wait');document.querySelector('.summary .card:nth-child(4) span').textContent=t('ready');$('waitingBtn').childNodes[0].nodeValue=t('waiting')+': ';$('performanceBtn').textContent=t('performance');$('fsBtn').textContent=t('fullscreen');$('detailClose').textContent=t('close');$('infoClose').textContent=t('close');document.querySelector('.login h2').textContent=t('loginTitle');document.querySelector('.login p').textContent=t('loginText');$('email').placeholder=t('email');$('password').placeholder=t('password');$('loginBtn').textContent=t('loginBtn');updateLocationUi()}function updateLocationUi(){const n=dockCount();$('locationSelect').value=selectedLocation;$('locationTitle').textContent=`THE PLACE TO GO · ${selectedLocation.toUpperCase()}`;$('footerLocation').textContent=`Amsterdam Warehouse Company · ${selectedLocation} · Dock 1 ${lang==='nl'?'t/m':'to'} ${n}`;document.documentElement.style.setProperty('--rows-landscape',String(Math.ceil(n/6)));document.documentElement.style.setProperty('--rows-portrait',String(Math.ceil(n/3)));document.title=`AWC ${t('title')} · ${selectedLocation}`}
 
@@ -205,6 +205,7 @@ function render(){let active=jobs.filter(j=>(j.location||'Conakryweg')===selecte
 async function allowed(){let email=(session?.user?.email||'').toLowerCase();if(!email)return false;const {data,error}=await db.from('awc_app_members').select('email,active').eq('email',email).maybeSingle();return !error&&!!data&&data.active}
 let dockSnapshotReady=false;
 let previousActiveDocks=new Set();
+let shownNextDockKeys=new Set();
 let nextDockTimer=null,nextDockTick=null;
 function closeNextDockPopup(){
   if(nextDockTimer){clearTimeout(nextDockTimer);nextDockTimer=null}
@@ -231,7 +232,48 @@ async function checkNextShipmentForFreedDock(dock){
     .eq('location',selectedLocation).eq('suggested_dock',dock).eq('active',true).eq('ready',true).eq('locked',false)
     .order('created_at',{ascending:true}).limit(1);
   if(error){console.error('next shipment lookup',error);return}
-  if(data&&data[0])showNextDockPopup(dock,data[0]);
+  const row=data&&data[0];
+  if(!row)return;
+  const key=`${selectedLocation}|${dock}|${String(row.reference||'').trim().toLowerCase()}`;
+  if(shownNextDockKeys.has(key))return;
+  shownNextDockKeys.add(key);
+  showNextDockPopup(dock,row);
+}
+async function checkQueuedShipmentsOnFreeDocks(activeDocks){
+  const {data,error}=await db.from('awc_loading_locations')
+    .select('reference,staging_area,suggested_dock,notes,created_at,ready,active,locked')
+    .eq('location',selectedLocation).eq('active',true).eq('ready',true).eq('locked',false)
+    .not('suggested_dock','is',null)
+    .order('created_at',{ascending:true});
+  if(error){console.error('queued shipment lookup',error);return}
+  const firstPerDock=new Map();
+  for(const row of (data||[])){
+    const dock=row.suggested_dock;
+    if(!dock||activeDocks.has(dock)||firstPerDock.has(dock))continue;
+    firstPerDock.set(dock,row);
+  }
+  // Toon maximaal één nieuwe melding tegelijk; oudste klaargezette zending eerst.
+  for(const [dock,row] of firstPerDock){
+    const key=`${selectedLocation}|${dock}|${String(row.reference||'').trim().toLowerCase()}`;
+    if(shownNextDockKeys.has(key))continue;
+    shownNextDockKeys.add(key);
+    showNextDockPopup(dock,row);
+    break;
+  }
+}
+function monitorAlertSeenKey(id){return 'awc_monitor_dock_alert_seen_'+id}
+function handleGlobalDockAlert(a){
+  if(!a||!a.id||a.location!==selectedLocation)return;
+  if(sessionStorage.getItem(monitorAlertSeenKey(a.id)))return;
+  sessionStorage.setItem(monitorAlertSeenKey(a.id),'1');
+  showNextDockPopup(a.dock,{reference:a.next_reference,staging_area:a.staging_area,notes:a.notes});
+}
+async function checkRecentGlobalDockAlert(){
+  if(!session)return;
+  const since=new Date(Date.now()-3*60*1000).toISOString();
+  const {data,error}=await db.from('awc_dock_ready_alerts').select('*').eq('location',selectedLocation).gte('created_at',since).order('created_at',{ascending:false}).limit(5);
+  if(error){console.error('dock ready alerts',error);return}
+  for(const a of (data||[]).reverse())if(!sessionStorage.getItem(monitorAlertSeenKey(a.id)))handleGlobalDockAlert(a);
 }
 async function refresh(){
   if(!session)return;
@@ -242,11 +284,12 @@ async function refresh(){
   const newActiveDocks=new Set(incoming.filter(j=>(j.location||'Conakryweg')===selectedLocation&&!j.departed).map(j=>j.dock));
   if(dockSnapshotReady){
     const freed=[...previousActiveDocks].filter(d=>d&&!newActiveDocks.has(d));
-    if(freed.length){for(const dock of freed)await checkNextShipmentForFreedDock(dock)}
+    // Centrale dockmelding komt via awc_dock_ready_alerts.
   }
   previousActiveDocks=newActiveDocks;
   dockSnapshotReady=true;
-  jobs=incoming;timelineCache.clear();lastSync=new Date();render();setLive('ok',syncLabel());
+  jobs=incoming;timelineCache.clear();lastSync=new Date();render();
+  setLive('ok',syncLabel());
 }
 let reconnectTimer=null,healthTimer=null,reconnectBusy=false;
 async function startRealtime(){
@@ -262,18 +305,22 @@ async function startRealtime(){
         scheduleReconnect();
       }
     })
+  if(alertChannel){try{await db.removeChannel(alertChannel)}catch(e){console.warn('remove alertChannel',e)}alertChannel=null}
+  alertChannel=db.channel('awc-monitor-dock-alerts')
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'awc_dock_ready_alerts'},payload=>handleGlobalDockAlert(payload.new))
+    .subscribe()
 }
 function scheduleReconnect(delay=3000){
   if(!session||reconnectTimer||reconnectBusy)return;
   reconnectTimer=setTimeout(async()=>{
     reconnectTimer=null;
     reconnectBusy=true;
-    try{await refresh();await startRealtime()}catch(e){console.error(e);reconnectBusy=false;scheduleReconnect(5000)}
+    try{await refresh();await startRealtime();await checkRecentGlobalDockAlert()}catch(e){console.error(e);reconnectBusy=false;scheduleReconnect(5000)}
   },delay)
 }
 async function restoreLiveConnection(){
   if(!session)return;
-  try{setLive('',t('restoring'));await refresh();await startRealtime()}catch(e){console.error(e);setLive('bad',t('noLive'));scheduleReconnect()}
+  try{setLive('',t('restoring'));await refresh();await startRealtime();await checkRecentGlobalDockAlert()}catch(e){console.error(e);setLive('bad',t('noLive'));scheduleReconnect()}
 }
 function startHealthCheck(){
   if(healthTimer)clearInterval(healthTimer);
@@ -282,15 +329,15 @@ function startHealthCheck(){
     refresh();
   },60000)
 }
-async function enter(){if(!(await allowed())){$('msg').className='msg err';$('msg').textContent='Dit account heeft geen toegang tot de Dockregistratie.';return}$('auth').classList.add('hidden');await refresh();await startRealtime()}
+async function enter(){if(!(await allowed())){$('msg').className='msg err';$('msg').textContent='Dit account heeft geen toegang tot de Dockregistratie.';return}$('auth').classList.add('hidden');await refresh();await startRealtime();await checkRecentGlobalDockAlert()}
 $('loginBtn').addEventListener('click',async()=>{goFullscreen();let email=$('email').value.trim(),password=$('password').value,msg=$('msg');if(!email||!password){msg.className='msg err';msg.textContent='Vul e-mailadres en wachtwoord in.';return}msg.className='msg';msg.textContent='Inloggen…';const {data,error}=await db.auth.signInWithPassword({email,password});if(error){msg.className='msg err';msg.textContent='Inloggen is niet gelukt. Controleer e-mailadres en wachtwoord.';return}session=data.session;msg.textContent='';await enter()});
-$('fsBtn').addEventListener('click',goFullscreen);$('locationSelect').addEventListener('change',e=>{closeAllOverlays();closeNextDockPopup();dockSnapshotReady=false;previousActiveDocks=new Set();setLocation(e.target.value);refresh()});$('langSelect').addEventListener('change',e=>{closeAllOverlays();setLanguage(e.target.value)});$('waitingBtn').addEventListener('click',openWaiting);$('performanceBtn').addEventListener('click',openPerformance);$('detailClose').addEventListener('click',closeDockDetail);$('nextDockClose').addEventListener('click',closeNextDockPopup);$('nextDockPopup').addEventListener('click',e=>{if(e.target===$('nextDockPopup'))closeNextDockPopup()});$('infoClose').addEventListener('click',closeAllOverlays);$('detailOverlay').addEventListener('click',e=>{if(e.target===$('detailOverlay'))closeDockDetail()});$('infoOverlay').addEventListener('click',e=>{if(e.target===$('infoOverlay'))closeAllOverlays()});['detailOverlay','infoOverlay'].forEach(id=>{$(id).addEventListener('pointerdown',()=>{if(!$(id).classList.contains('hidden'))armAutoClose()})});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAllOverlays()});
+$('fsBtn').addEventListener('click',goFullscreen);$('locationSelect').addEventListener('change',e=>{closeAllOverlays();closeNextDockPopup();dockSnapshotReady=false;previousActiveDocks=new Set();shownNextDockKeys=new Set();setLocation(e.target.value);refresh().then(checkRecentGlobalDockAlert)});$('langSelect').addEventListener('change',e=>{closeAllOverlays();setLanguage(e.target.value)});$('waitingBtn').addEventListener('click',openWaiting);$('performanceBtn').addEventListener('click',openPerformance);$('detailClose').addEventListener('click',closeDockDetail);$('nextDockClose').addEventListener('click',closeNextDockPopup);$('nextDockPopup').addEventListener('click',e=>{if(e.target===$('nextDockPopup'))closeNextDockPopup()});$('infoClose').addEventListener('click',closeAllOverlays);$('detailOverlay').addEventListener('click',e=>{if(e.target===$('detailOverlay'))closeDockDetail()});$('infoOverlay').addEventListener('click',e=>{if(e.target===$('infoOverlay'))closeAllOverlays()});['detailOverlay','infoOverlay'].forEach(id=>{$(id).addEventListener('pointerdown',()=>{if(!$(id).classList.contains('hidden'))armAutoClose()})});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAllOverlays()});
 window.addEventListener('offline',()=>setLive('bad',t('noInternet')));
 window.addEventListener('online',()=>restoreLiveConnection());
 window.addEventListener('focus',()=>{if(session)restoreLiveConnection()});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&session)restoreLiveConnection()});
 window.addEventListener('pageshow',e=>{if(session&&e.persisted)restoreLiveConnection()});
-async function init(){applyLanguage();updateClock();updateFullscreenButton();setInterval(updateClock,1000);setInterval(()=>{render();if(lastSync&&$('liveState').classList.contains('ok'))$('liveText').textContent=syncLabel()},60000);startHealthCheck();const {data:{session:s}}=await db.auth.getSession();session=s;if(session)await enter();else setLive('bad',t('notLogged'));db.auth.onAuthStateChange((_event,sess)=>{session=sess;if(!sess){if(channel){db.removeChannel(channel);channel=null}if(reconnectTimer){clearTimeout(reconnectTimer);reconnectTimer=null}$('auth').classList.remove('hidden');setLive('bad',t('notLogged'))}})}
+async function init(){applyLanguage();updateClock();updateFullscreenButton();setInterval(updateClock,1000);setInterval(()=>{render();if(lastSync&&$('liveState').classList.contains('ok'))$('liveText').textContent=syncLabel()},60000);startHealthCheck();const {data:{session:s}}=await db.auth.getSession();session=s;if(session)await enter();else setLive('bad',t('notLogged'));db.auth.onAuthStateChange((_event,sess)=>{session=sess;if(!sess){if(channel){db.removeChannel(channel);channel=null}if(alertChannel){db.removeChannel(alertChannel);alertChannel=null}if(reconnectTimer){clearTimeout(reconnectTimer);reconnectTimer=null}$('auth').classList.remove('hidden');setLive('bad',t('notLogged'))}})}
 init();
 </script>
 </body>

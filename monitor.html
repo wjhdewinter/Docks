@@ -280,11 +280,15 @@ async function checkQueuedShipmentsOnFreeDocks(activeDocks){
     break;
   }
 }
-function monitorAlertSeenKey(id){return 'awc_monitor_dock_alert_seen_'+id}
+function monitorAlertSeenKey(a){
+  const stamp=String(a?.created_at||a?.updated_at||'');
+  return 'awc_monitor_dock_alert_seen_'+String(a?.id||'')+'_'+stamp;
+}
 function handleGlobalDockAlert(a){
   if(!a||!a.id||a.location!==selectedLocation)return;
-  if(sessionStorage.getItem(monitorAlertSeenKey(a.id)))return;
-  sessionStorage.setItem(monitorAlertSeenKey(a.id),'1');
+  const seenKey=monitorAlertSeenKey(a);
+  if(sessionStorage.getItem(seenKey))return;
+  sessionStorage.setItem(seenKey,'1');
   {const src=jobs.find(j=>Number(j.id)===Number(a.source_registration_id));showNextDockPopup(a.dock,{reference:a.next_reference,staging_area:a.staging_area,notes:a.notes,alert_type:a.alert_type,previous_dock:a.previous_dock,current_dock:src?.dock||'',current_reference:src?.reference||'',load_references:a.load_references||[],unload_references:a.unload_references||[]});}
 }
 async function checkRecentGlobalDockAlert(){
@@ -292,7 +296,7 @@ async function checkRecentGlobalDockAlert(){
   const since=new Date(Date.now()-3*60*1000).toISOString();
   const {data,error}=await db.from('awc_dock_ready_alerts').select('*').eq('location',selectedLocation).gte('created_at',since).order('created_at',{ascending:false}).limit(5);
   if(error){console.error('dock ready alerts',error);return}
-  for(const a of (data||[]).reverse())if(!sessionStorage.getItem(monitorAlertSeenKey(a.id)))handleGlobalDockAlert(a);
+  for(const a of (data||[]).reverse())if(!sessionStorage.getItem(monitorAlertSeenKey(a)))handleGlobalDockAlert(a);
 }
 async function refresh(){
   if(!session)return;
@@ -326,7 +330,7 @@ async function startRealtime(){
     })
   if(alertChannel){try{await db.removeChannel(alertChannel)}catch(e){console.warn('remove alertChannel',e)}alertChannel=null}
   alertChannel=db.channel('awc-monitor-dock-alerts')
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'awc_dock_ready_alerts'},payload=>handleGlobalDockAlert(payload.new))
+    .on('postgres_changes',{event:'*',schema:'public',table:'awc_dock_ready_alerts'},payload=>handleGlobalDockAlert(payload.new))
     .subscribe()
 }
 function scheduleReconnect(delay=3000){

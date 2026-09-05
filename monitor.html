@@ -144,8 +144,8 @@ header{flex:0 0 auto;display:grid;grid-template-columns:minmax(0,1fr) auto auto;
 .nextDockClose{margin-top:18px;border:0;border-radius:12px;padding:13px 34px;background:#111;color:#fff;font-size:18px;font-weight:900;cursor:pointer}
 
 /* Extra groot-schermweergave; normale monitor blijft ongewijzigd */
-.viewtoggle{display:flex;gap:5px;align-items:center}
-.viewbtn{border:1px solid #cbd5e1;background:#fff;color:#111827;border-radius:8px;padding:7px 11px;font-weight:900;cursor:pointer}
+.viewbar{flex:0 0 auto;padding:6px 12px;background:#0e0e0e;border-top:1px solid #252525}.viewtoggle{display:flex;gap:6px;align-items:center;justify-content:center;width:100%}
+.viewbtn{border:1px solid #cbd5e1;background:#fff;color:#111827;border-radius:8px;padding:8px 16px;font-weight:900;cursor:pointer;min-width:120px}
 .viewbtn.active{background:#111827;color:#fff;border-color:#111827}
 body.bigscreen .summary,body.bigscreen .quickbar{display:none}
 body.bigscreen .board{padding:8px 10px}
@@ -160,15 +160,16 @@ body.bigscreen .meta .presenceLine,body.bigscreen .meta .carrier:not(.big-assign
 body.bigscreen .meta .big-assigned{display:block!important;font-size:clamp(16px,1.15vw,22px);font-weight:1000;margin-top:7px}
 body.bigscreen .empty{margin:auto 0;font-size:clamp(20px,1.5vw,28px);text-align:center}
 body.bigscreen .footer{font-size:11px}
-@media (max-width:900px){.viewbtn{padding:6px 8px;font-size:11px}}
+@media (max-width:900px){.viewbar{padding:5px 8px}.viewbtn{padding:8px 10px;font-size:12px;min-width:0;flex:1}.viewtoggle{max-width:420px;margin:0 auto}}
 </style>
 </head>
 <body>
 <div id="auth" class="auth"><div class="login"><img src="https://www.amsterdamwarehouse.com/assets/img/logo_AWC_black.svg" alt="Amsterdam Warehouse Company"><h2>Live Dockbord</h2><p>Log één keer in. Daarna blijft dit scherm alleen het actuele dockoverzicht tonen en automatisch synchroniseren.</p><input id="email" type="email" autocomplete="email" placeholder="E-mailadres"><input id="password" type="password" autocomplete="current-password" placeholder="Wachtwoord"><button id="loginBtn">Live bord openen</button><div id="msg" class="msg"></div></div></div>
-<header><div class="brand"><img src="https://www.amsterdamwarehouse.com/assets/img/logo_AWC_black.svg" alt="AWC"><div class="title"><h1>LIVE DOCKBORD</h1><small id="locationTitle">THE PLACE TO GO · CONAKRYWEG</small></div></div><div class="locwrap"><div class="viewtoggle" aria-label="Weergave"><button id="normalViewBtn" class="viewbtn active" type="button">Normaal</button><button id="bigViewBtn" class="viewbtn" type="button">Groot scherm</button></div><select id="locationSelect" class="locsel" aria-label="Locatie"><option value="Conakryweg">Conakryweg · 22 docks</option><option value="Slego">Slego · 16 docks</option></select><select id="langSelect" class="locsel" aria-label="Taal"><option value="nl">NL</option><option value="en">EN</option></select></div><div class="headright"><div id="clock" class="clock">--:--</div><div id="date" class="date"></div></div></header>
+<header><div class="brand"><img src="https://www.amsterdamwarehouse.com/assets/img/logo_AWC_black.svg" alt="AWC"><div class="title"><h1>LIVE DOCKBORD</h1><small id="locationTitle">THE PLACE TO GO · CONAKRYWEG</small></div></div><div class="locwrap"><select id="locationSelect" class="locsel" aria-label="Locatie"><option value="Conakryweg">Conakryweg · 22 docks</option><option value="Slego">Slego · 16 docks</option></select><select id="langSelect" class="locsel" aria-label="Taal"><option value="nl">NL</option><option value="en">EN</option></select></div><div class="headright"><div id="clock" class="clock">--:--</div><div id="date" class="date"></div></div></header>
 <div id="connBanner" class="connBanner">VERBINDING VERBROKEN — gegevens mogelijk niet actueel</div>
 <section class="summary"><div class="card"><b id="freeCount">22</b><span>VRIJE DOCKS</span></div><div class="card"><b id="busyCount">0</b><span>BEZETTE DOCKS</span></div><div class="card"><b id="waitCount">0</b><span>WACHT</span></div><div class="card"><b id="readyCount">0</b><span>GEREED</span></div></section>
 <section class="quickbar"><button id="waitingBtn" class="quickbtn" type="button">Wachtend / aangemeld: <b id="waitingCount">0</b></button><button id="performanceBtn" class="quickbtn" type="button">Dagprestatie bekijken</button></section>
+<section class="viewbar" aria-label="Weergave"><div class="viewtoggle"><button id="normalViewBtn" class="viewbtn active" type="button">Normaal</button><button id="bigViewBtn" class="viewbtn" type="button">Groot scherm</button></div></section>
 <main class="board"><div id="grid" class="grid"></div></main>
 <footer class="footer"><div id="liveState" class="live"><span class="dot"></span><span id="liveText">Verbinden…</span></div><div id="footerLocation">Amsterdam Warehouse Company · Conakryweg · Dock 1 t/m 22</div></footer>
 <button id="fsBtn" class="fsbtn" type="button">Volledig scherm</button>
